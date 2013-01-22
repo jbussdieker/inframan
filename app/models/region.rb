@@ -3,6 +3,10 @@ class Region
     @data = item
   end
 
+  def instances
+    @data.instances
+  end
+
   def servers
     @data.instances.collect do |instance|
       Server.new(instance)
