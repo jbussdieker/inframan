@@ -3,6 +3,10 @@
 <table>
   <tr>
     <th>Name</th>
+    <th>Public IP</th>
+    <th>Private IP</th>
+    <th>AWS Status</th>
+    <th>Icinga Status</th>
     <th></th>
     <th></th>
     <th></th>
@@ -11,6 +15,10 @@
 <% @servers.each do |server| %>
   <tr>
     <td><%= server.name %></td>
+    <td><%= server.public_ip %></td>
+    <td><%= server.private_ip %></td>
+    <td><%= server.status %></td>
+    <td><%= server.icinga["status"] %></td>
     <td><%= link_to "Delete", server_path(server.id), :method => :delete %></td>
   </tr>
 <% end %>

@@ -1,4 +1,7 @@
 Inframan::Application.routes.draw do
+  resources :types
+
+
   resources :providers
   resources :servers
 
