@@ -12,12 +12,28 @@
   <% end %>
 
   <div class="field">
+    <%= f.label :region_id %><br />
+    <%= f.select :region_id, Region.all.collect {|r|[r.name, r.id]} %>
+  </div>
+  <div class="field">
+    <%= f.label :master %><br />
+    <%= f.select :master, Server.all.collect {|r|[r.name, r.private_ip]} %>
+  </div>
+  <div class="field">
     <%= f.label :name %><br />
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :type_id %><br />
-    <%= f.text_field :type_id %>
+    <%= f.label :public_ip %><br />
+    <%= f.text_field :public_ip %>
+  </div>
+  <div class="field">
+    <%= f.label :image_id %><br />
+    <%= f.select :image_id, ["ami-4e5f7c0b"] %>
+  </div>
+  <div class="field">
+    <%= f.label :role %><br />
+    <%= f.select :role, ["mon", "mq", "puppet", "graph"] %>
   </div>
   <div class="actions">
     <%= f.submit %>

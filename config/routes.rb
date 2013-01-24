@@ -1,4 +1,10 @@
 Inframan::Application.routes.draw do
+  resources :roles
+
+
+  resources :regions
+
+
   resources :types
 
 

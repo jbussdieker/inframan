@@ -1,74 +1,35 @@
-class Server
-  extend ActiveModel::Naming
-  include ActiveModel::Validations
+class Server < ActiveRecord::Base
+  attr_accessible :name, :private_ip, :public_ip, :region_id, :instance_id, :image_id, :role, :master
+  attr_accessor :role, :master
+  before_create :provision_instance
+  before_destroy :deprovision_instance
 
-  attr_accessor :id, :name, :type_id
-  attr_accessor :private_ip, :public_ip
+  belongs_to :region
 
-  def self.all
-    Provider.first['us-west-1'].servers
-  end
-
-  def self.find(id)
-    all.each do |server|
-      if server.id == id
-        return server
-      end
-    end
-    nil
-  end
-
-  def create
-    region = Provider.first['us-west-1']
-    @data = region.instances.create({
-      :image_id => 'ami-4e5f7c0b', 
-      :key_name => 'master',
-      :user_data => "#{self.name}:10.174.23.252",
-      :security_groups => ['default', self.type_id],
-      :instance_type => 'm1.small',
-    })
-    @data.tags["Name"] = self.name
-  end
-
-  def destroy
-    if @data and @data.kind_of? AWS::EC2::Instance
-      @data.terminate
-    else
-      raise "Invalid type #{@data}"
+  def deprovision_instance
+    begin
+      region.ec2.instances[instance_id].terminate
+    rescue Exception => e
+      errors.add(:provisioning, "Failed to deprovision")
+      false
     end
   end
 
-  def icinga
-    Icinga.find(self.name) || {}
-  end
-
-  def initialize(item={})
-    @data = item
-    if item and item.kind_of? AWS::EC2::Instance
-      self.name = item.tags["Name"]
-      self.type_id = item.instance_type
-      self.id = item.id
-      self.public_ip = item.public_ip_address
-      self.private_ip = item.private_ip_address
-    else
-      self.name = item[:name]
-      self.type_id = item[:type_id]
+  def provision_instance
+    return if instance_id
+    begin
+      instance = region.ec2.instances.create({
+        :image_id => image_id, 
+        :key_name => 'master',
+        :user_data => "#{name}:#{self.master}",
+        :security_groups => ['default', self.role],
+        :instance_type => 'm1.small',
+      })
+      instance.tags["Name"] = name
+      self.instance_id = instance.id
+    rescue Exception => e
+      errors.add(:provisioning, "Failed to create instance")
+      false
     end
-  end
-
-  def status
-    @data.status
-  end
-
-  def to_key
-    id || nil
-  end
-
-  def persisted?
-    @data.kind_of? AWS::EC2::Instance
-  end
-
-  def to_s
-    name
   end
 end

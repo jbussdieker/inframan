@@ -1,4 +1,17 @@
-<h1>Listing servers</h1>
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @region.name %>
+</p>
+
+<p>
+  <b>Provider:</b>
+  <%= @region.provider %>
+</p>
+
+<%= link_to 'Edit', edit_region_path(@region) %> |
+<%= link_to 'Back', regions_path %>
 
 <table>
   <tr>
@@ -12,7 +25,7 @@
     <th></th>
   </tr>
 
-<% @servers.each do |server| %>
+<% @region.servers.each do |server| %>
   <tr>
     <td><%= server.name %></td>
     <td><%= link_to server.public_ip, "http://#{server.public_ip}" %></td>
@@ -25,7 +38,3 @@
   </tr>
 <% end %>
 </table>
-
-<br />
-
-<%= link_to 'New Server', new_server_path %>

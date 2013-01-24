@@ -2,6 +2,8 @@
 
 one:
   name: MyString
+  provider_id: 1
 
 two:
   name: MyString
+  provider_id: 1

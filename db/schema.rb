@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130122082617) do
+ActiveRecord::Schema.define(:version => 20130124070135) do
 
   create_table "providers", :force => true do |t|
     t.string   "name"
@@ -19,6 +19,30 @@ ActiveRecord::Schema.define(:version => 20130122082617) do
     t.string   "secret_access_key"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
+  end
+
+  create_table "regions", :force => true do |t|
+    t.string   "name"
+    t.integer  "provider_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "roles", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "servers", :force => true do |t|
+    t.string   "name"
+    t.string   "public_ip"
+    t.string   "private_ip"
+    t.integer  "region_id"
+    t.string   "instance_id"
+    t.string   "image_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "types", :force => true do |t|
